@@ -10,6 +10,7 @@ from amino_acids import aa, codons
 
 def collapse(L):
     """ Converts a list of strings to a string by concatenating all elements of the list """
+    #"".join(L) is very cool.
     output = ""
     for s in L:
         output = output + s
@@ -33,7 +34,10 @@ def coding_strand_to_AA(dna):
         m = i+3
         codon = dna[i:m];
         for j in range(len(codons)):
-            for k in xrange(len(codons[j])):
+            for k in xrange(len(codons[j])):  # here the k is not very useful - see below example
+            #for test in codons[j]:
+            #   if test == codon:
+            #       aminoStrand += aa[j]
                 if (codons[j][k] == codon):
                     aminoStrand = aminoStrand + aa[j]                   
     return aminoStrand
@@ -55,7 +59,8 @@ def get_reverse_complement(dna):
     #nucleotide to a string.
     
     for i in range(len(dna)):
-        s = dna[len(dna)-i-1]
+        s = dna[len(dna)-i-1] # this is an interesting way of solving the reverse problem. another way would be
+                            # using a different for loop - for i in range(len(dna),0,-1):  ## (start, end, step-size)
         if (s == 'A'):
             t = 'T'
         if (s == 'T'):
@@ -121,7 +126,8 @@ def find_all_ORFs_oneframe(dna):
             i = i+len(ORFPiece)#i jumps to the end of the sequence.
         else:
             i = i+3
-        if (i >= len(dna)):
+        if (i >= len(dna)): #Instead of doing this - you know that i>= len(dna) is the boolean expression you need to remain false during your loop.
+                            # so simply changing the while loop to -> while (i < len(dna)): will solve this without the use of an additional conditional and a flag variable
                done = True
     return ORF
         
@@ -231,7 +237,7 @@ def gene_finder(dna, threshold):
     ORFs = find_all_ORFs_both_strands(dna)
     for x in ORFs:
         if len(x) > threshold:
-            Aminos.append(coding_strand_to_AA(x))
+            Aminos.append(coding_strand_to_AA(x)) #Normally title-case variables are saved for Class Variable names. 
     return Aminos
 
 #def getThreshold():
