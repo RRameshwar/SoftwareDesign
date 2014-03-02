@@ -62,7 +62,7 @@ def makePageFrequencyDict(allwords,searchTerm):
             pages[i] = findNumber(page, searchTerm)
     return pages
     
-#def getSentenceOfWord(allWords,searchTerm):
+def getSentenceOfWord(fulltext,searchTerm):
     
     
     
@@ -73,8 +73,20 @@ def pageSentiment(page,searchTerm):
     for x in pageAllWords:
         if x==searchTerm:
             countForPage+=1
-            sentence = getSentenceOfWord(pageAllWords,searchTerm)
+            sentence = getSentenceOfWord(pageAllWords,searchTerm,countForPage)
             sentimentsForPage.append(sentimentAnalysis(sentence))
+    averagePageSentiment = sum(sentimentsForPage)/float(len(sentimentsForPage))
+    return averagePageSentiment
+    
+    
+def makePageSentimentDict(fulltext):
+    pages = makePageArray(fulltext)
+    pageSentimentDict = {}
+    for i in range(pages):
+        pageSentimentDict[i] = pageSentiment(pages[i])
+    return pageSentimentDict
+        
+
             
             
 if __name__ == "__main__":
