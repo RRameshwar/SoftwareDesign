@@ -6,9 +6,7 @@ Created on Mon Feb 24 13:08:52 2014
 @author: ragspiano
 """
 import re
-
-
-
+from pattern.en import*
 
 def most_common(hist, mcw):
     t = []
@@ -41,15 +39,16 @@ frequencies = {}
 allwords = re.findall("[\w\-]+", modText)
 allmcw = re.findall("[\w\-]+", mcw)
 
+print allwords
 for x in allwords:
     if x in frequencies:
         frequencies[x] += 1
     else:
         frequencies[x] = 1
-#print frequencies
+
         
 common = most_common(frequencies, allmcw)
-#print common
+
 for freq, word in common[0:10]:
     print word,'\t', freq
 
