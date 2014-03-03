@@ -16,6 +16,7 @@ import re
 from SherlockAnalysis import getAllWordsArray
 import Image
 import math
+import SentimentAnalysis
 
 def findNumber(a,searchTerm):
     num = 0
@@ -29,7 +30,7 @@ def getMaximumFrequency(d):
     for x in d:
        if d[x] > max:
             max = d[x]
-       return max
+    return max
     
 def drawImage(pages,maxfreq):
     width=3
@@ -62,8 +63,16 @@ def makePageFrequencyDict(allwords,searchTerm):
             pages[i] = findNumber(page, searchTerm)
     return pages
     
-def getSentenceOfWord(fulltext,searchTerm):
-    
+def getSentenceOfWord(page,searchTerm,count):
+    sentenceListPage = SentimentAnalysis.SentenceBreakup(page)
+    c=0
+    for x in sentenceListPage:
+        if searchTerm in x:
+            c+=1
+            if c==count:
+                return x
+    return None #this should never run
+                
     
     
 def pageSentiment(page,searchTerm):
@@ -73,22 +82,55 @@ def pageSentiment(page,searchTerm):
     for x in pageAllWords:
         if x==searchTerm:
             countForPage+=1
-            sentence = getSentenceOfWord(pageAllWords,searchTerm,countForPage)
-            sentimentsForPage.append(sentimentAnalysis(sentence))
+            sentence = getSentenceOfWord(page,searchTerm,countForPage)
+            sentimentsForPage.append(sentiment(sentence)[1])
     averagePageSentiment = sum(sentimentsForPage)/float(len(sentimentsForPage))
     return averagePageSentiment
     
+def makePageArray(fulltext):
+    pages = []
+    wordCount=1
+    for k in fulltext:
+        if k==" ":
+            wordCount+=1
+    numpages = int(math.ceil(wordCount/250.0)
+    for 
+
+#makePageArray("hi my name is anne and I like warm hugs")
     
-def makePageSentimentDict(fulltext):
-    pages = makePageArray(fulltext)
+
+
+def makePageSentimentDict(fulltext,searchTerm):
+ #####  pages = makePageArray(fulltext)
     pageSentimentDict = {}
     for i in range(pages):
-        pageSentimentDict[i] = pageSentiment(pages[i])
+        pageSentimentDict[i] = pageSentiment(pages[i],searchTerm)
     return pageSentimentDict
-        
 
-            
-            
+def drawSentimentImage(pageSentimentDict,pagesDict,maxfreq):
+
+    pageSentimentDict = SentimentAnalysis.scaling(pageSentimentDict)    
+    
+    width=3
+    n = len(pagesDict)*width
+    q = maxfreq*width
+    im = Image.new("RGB",(n,q))
+    pixels = im.load() 
+    currentPage = 0
+    for x in range(0,n-1,width):
+        if currentPage>=len(pagesDict):
+            break
+        freq = pagesDict[currentPage]
+        currentPage +=1
+        for y in range(freq):
+            for a in range(x,x+width):
+                for b in range(y,y+(2*width)):
+                    red = int((1-pageSentimentDict[x])*255)
+                    green = int(pageSentimentDict[x]*255)
+                    pixels[a,q-b-1] = (red,green,0)
+    im.save('sentimentFrequency.jpg', 'JPEG')
+         
+"""
 if __name__ == "__main__":
     searchTerm = "the"
     f = "SherlockH.txt"
@@ -100,13 +142,22 @@ if __name__ == "__main__":
     
 
     
-
+"""
     
+def pageWords(page):
+    """
+    Takes a list that represents a page, with nested lists, one for each
+    sentence.  Returns a list of strings, an array of words
+    """
+    allwords = []
+    for sentence in page:
+        words = re.findall("[\w\-\']+", sentence)
+        for x in words:
+            allwords.append(x)
+    return allwords
     
-
-    
-    
-    
-    
-
-
+def searchSentences(page,searchTerm):
+    for sentence in page:
+        if not(searchTerm in sentence):
+            page.remove(sentence)
+    return page
