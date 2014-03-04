@@ -82,7 +82,7 @@ def remap_interval(val, input_interval_start, input_interval_end, output_interva
     val4 = val3 + output_interval_start
     return val4
 
-print remap_interval(200, 0, 349, -1, 1)                                           
+# print remap_interval(200, 0, 349, -1, 1)                                           
 
 def main():
 
