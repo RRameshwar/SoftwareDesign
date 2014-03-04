@@ -6,7 +6,7 @@ Created on Thu Feb 27 08:14:24 2014
 """
 
 import re
-from pattern.en import*
+from pattern.en import *
 import Image
 
 def remap_interval(val, input_interval_start, input_interval_end, output_interval_start, output_interval_end):
@@ -59,6 +59,7 @@ def PageBreakup(SentenceList):
             words = 0
             start = i
     return PageList
+    
 
 def Sentiment(PageList):
     SentimentList = []
@@ -87,7 +88,6 @@ def scaling(SentimentList):
 def graphics(SentimentList):
     im = Image.new("RGB",(len(SentimentList)+1,300),color=(255,255,255))
     pixels = im.load()
-    print len(SentimentList)
     
     for i in range(len(SentimentList)):
         red = int((1-SentimentList[i])*255)
@@ -112,13 +112,14 @@ def main():
     SentenceList = SentenceBreakup(modText)
     
     PageList = PageBreakup(SentenceList)
+    print PageList
     
     SentimentList = Sentiment(PageList)
         
-    SentimentList = scaling(SentimentList)
+    #SentimentList = scaling(SentimentList)
     
-    graphics(SentimentList)   
-
+    graphics(scaling(SentimentList))   
+    
 if __name__ == '__main__':
     main()
 
